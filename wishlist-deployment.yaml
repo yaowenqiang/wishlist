@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: wishlist-deployment
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: wishlist
+    template:
+        metadata:
+            labels:
+                app: wishlist
+        spec:
+            containers:
+              - name: wishlist
+                image: karthequian/wishlist:1.0
+                ports:
+                  - containerPort: 8080
+                env:
+                  - name: port
+                    value: "8080"
+              - name: catelog
+                image: karthequian/wishlist-catelog:1.0
+                ports:
+                  - containerPort: 8081
+                env:
+                  - name: port
+                    value: "8081"
+              - name: auth
+                image: karthequian/wishlist-auth:1.0
+                ports:
+                  - containerPort: 8082
+                env:
+                  - name: port
+                    value: "8082"
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: wishlist-service
+spec:
+    type: NodePort
+    selector:
+        app: wishlist
+    ports:
+      - name: wishlist-port
+        protocol: TCP
+        port: 8090
+      - name: wishlist-catelog-port
+        protocol: TCP
+        port: 8091
+      - name: wishlist-auth-port
+        protocol: TCP
+        port: 8092
