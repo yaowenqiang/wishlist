@@ -1,0 +1,7 @@
+rbac:
+    create: false
+server:
+    name: server
+service:
+    nodePort: 30001
+    type: NodePort
