@@ -33,7 +33,7 @@ spec:
              
                 command:
                   - "/go/bin/agent-linux"
-                    "--collector.host-port=jaeger-collector.default.svc:14267"
+                  - "--collector.host-port=jaeger-collector.default.svc:14267"
               - name: hw
                 image: karthequian/helloworld:latest
 ---
