@@ -21,7 +21,7 @@ spec:
                   - name: port
                     value: "8080"
               - name: catelog
-                image: karthequian/wishlist-catelog:1.0
+                image: karthequian/wishlist-catalog:1.0
                 ports:
                   - containerPort: 8081
                 env:
