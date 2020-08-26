@@ -1,11 +1,17 @@
 FROM golang
 MAINTAINER Karthik Gaekwad
-
+RUN echo " " > /etc/apt/sources.list;
+RUN echo "deb http://mirrors.aliyun.com/debian jessie main" >> /etc/apt/sources.list
+RUN echo "deb http://mirrors.aliyun.com/debian jessie-updates main" >> /etc/apt/sources.list
+RUN go env -w GO111MODULE=on
+RUN go env -w  GOPROXY=https://goproxy.cn,direct
 RUN go get github.com/prometheus/client_golang/prometheus
 RUN go get github.com/prometheus/client_golang/prometheus/promhttp
 RUN go get github.com/gorilla/mux
 COPY . /go/src/github.com/karthequian/wishlist
 WORKDIR /go/src/github.com/karthequian/wishlist/list
+RUN cd .. && go mod init
+RUN cd /go/src/github.com/karthequian/wishlist/list
 RUN go get && go build -o /bin/list
 
 ENTRYPOINT ["/bin/list"]
