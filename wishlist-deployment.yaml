@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
     name: wishlist-deployment
 spec:
-    replicas: 3
+    replicas: 1
     selector:
         matchLabels:
             app: wishlist
@@ -12,27 +12,36 @@ spec:
             labels:
                 app: wishlist
         spec:
+            volumes:
+              - name: config-volume
+                configMap:
+                    name: log-config
             containers:
               - name: wishlist
                 image: karthequian/wishlist:1.0
                 ports:
                   - containerPort: 8080
                 env:
-                  - name: port
+                  - name: PORT
                     value: "8080"
+                  - name: LOG_LEVEL
+                    valueFrom:
+                        configMapKeyRef:
+                            name: log-config
+                            key: log-level
               - name: catelog
                 image: karthequian/wishlist-catalog:1.0
                 ports:
                   - containerPort: 8081
                 env:
-                  - name: port
+                  - name: PORT
                     value: "8081"
               - name: auth
                 image: karthequian/wishlist-auth:1.0
                 ports:
                   - containerPort: 8082
                 env:
-                  - name: port
+                  - name: PORT
                     value: "8082"
 
 ---
