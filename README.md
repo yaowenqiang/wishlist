@@ -9,3 +9,6 @@ Sample wishlist application to demo microservices with containers running in Kub
 > kubectl get deployments -w
 > minikube service prom-demo-prometheus-server
 
+> minikube start --feature-gates=EphemeralContainers=true
+> kubectl alpha debug -it hotrod-deployment-646588f449-n4k4w  --image=busybox
+
