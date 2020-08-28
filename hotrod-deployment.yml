@@ -30,10 +30,10 @@ spec:
                     protocol: UDP
                   - containerPort: 6832
                     protocol: UDP
-             
                 command:
                   - "/go/bin/agent-linux"
                   - "--collector.host-port=jaeger-collector.default.svc:14267"
+                terminationMessagePath: "/tmp/my-log"
               - name: hw
                 image: karthequian/helloworld:latest
 ---
