@@ -16,6 +16,9 @@ spec:
               - name: config-volume
                 configMap:
                     name: log-config
+              - name: secret-volume
+                secret:
+                  secretName: mysql-connection-secret
             containers:
               - name: wishlist
                 image: karthequian/wishlist:1.0
@@ -29,6 +32,12 @@ spec:
                         configMapKeyRef:
                             name: log-config
                             key: log-level
+                livenessProbe:
+                    httpGet:
+                        path: /status
+                        port: 8080
+                    initialDelaySeconds: 5
+                    timeoutSeconds: 1
               - name: catelog
                 image: karthequian/wishlist-catalog:1.0
                 ports:
@@ -36,13 +45,35 @@ spec:
                 env:
                   - name: PORT
                     value: "8081"
+                livenessProbe:
+                    httpGet:
+                        path: /status
+                        port: 8080
+                    initialDelaySeconds: 5
+                    timeoutSeconds: 1
               - name: auth
                 image: karthequian/wishlist-auth:1.0
                 ports:
                   - containerPort: 8082
+                volumeMounts:
+                    - mountPath: "/etc/mysq-volume"
+                      name: secret-volume
+                      readOnly: true
                 env:
                   - name: PORT
                     value: "8082"
+                  - name: MYSQL_CONNECTION_STRING
+                    valueFrom:
+                      secretKeyRef:
+                          key: connection-string
+                          name: mysql-connection-secret
+                livenessProbe:
+                    httpGet:
+                        path: /status
+                        port: 8080
+                    initialDelaySeconds: 5
+                    timeoutSeconds: 1
+
 
 ---
 kind: Service
@@ -56,10 +87,10 @@ spec:
     ports:
       - name: wishlist-port
         protocol: TCP
-        port: 8090
+        port: 8080
       - name: wishlist-catelog-port
         protocol: TCP
-        port: 8091
+        port: 8081
       - name: wishlist-auth-port
         protocol: TCP
-        port: 8092
+        port: 8082
